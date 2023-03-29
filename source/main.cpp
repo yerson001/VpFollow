@@ -1,11 +1,12 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-
 #include <iostream>
 #include <string>
 #include "laneDetection.h"
 #include "calibration.h"
 #include "functions.h"
+#include "vanishpoint.h"
+#include "transformation.h"
 
 using namespace cv;
 using namespace std;
@@ -23,20 +24,6 @@ Mat cameraMatrix, dist; //Calibration Matrix.
 Mat perspectiveMatrix; //Homography Matrix.
 String coordinatetext = "";
 Mat debugWindowROI;
-
-//Point2f perspectiveSrc[] = {
-//    Point2f(570,490),
-//    Point2f(720,490),
-//    Point2f(450,698),
-//    Point2f(830,698)};
-
-//Point2f perspectiveDst[] = {
-//    Point2f(200,0),
-//    Point2f(980,0),
-//    Point2f(200,720),
-//    Point2f(980,720)};
-
-
 
 Point2f perspectiveSrc[] = {
     Point2f(570,300),
@@ -64,6 +51,8 @@ void draw_lines(Mat frame){
 }
 
 funciones fun;
+vanishpoint vp;
+transformation tf;
 
 
 int main(int argc, char **argv)
@@ -116,37 +105,41 @@ int main(int argc, char **argv)
     //    imshow("video frame ",videoFrame);
     undistort(videoFrame, videoFrameUndistorted, cameraMatrix, dist);
     //    imshow("undis",videoFrameUndistorted);
-//    _videoFrameUndistorted = videoFrameUndistorted.clone();
-//    //Start Homography
-//    warpPerspective(_videoFrameUndistorted, videoFramePerspective, perspectiveMatrix, Size(370,465));
+    _videoFrameUndistorted = videoFrameUndistorted.clone();
+    //Start Homography
+    warpPerspective(_videoFrameUndistorted, videoFramePerspective, perspectiveMatrix, Size(370,465));
 
-//    imshow("perspective",videoFramePerspective);
+    //    imshow("perspective",videoFramePerspective);
 
 
-//    Mat mergeImage;
-//    Mat finalResult;
-//    //To create debug window
-//    Mat debugWindowROI;
-//    Mat resizePic;
-//    //===========Start Real Time Processing===========
-//    float laneDistant = 0;
-//    stringstream ss;
-//    namedWindow("Real Time Execution", WINDOW_NORMAL);
-//    laneVideo.set(CAP_PROP_POS_FRAMES, 0);
-//    laneVideo >> videoFrame;
-//    Mat showVideos(videoFrame.size().height, videoFrame.size().width, CV_8UC3, Scalar(0,0,0));
-//    laneDetection LaneAlgoVideo(_videoFrameUndistorted, perspectiveMatrix);
-//    //imshow("enviarimage",_videoFrameUndistorted);
+    Mat mergeImage;
+    Mat finalResult;
+    //To create debug window
+    Mat debugWindowROI;
+    Mat resizePic;
+    //===========Start Real Time Processing===========
+    float laneDistant = 0;
+    stringstream ss;
+    namedWindow("Real Time Execution", WINDOW_NORMAL);
+    laneVideo.set(CAP_PROP_POS_FRAMES, 0);
+    laneVideo >> videoFrame;
+    Mat showVideos(videoFrame.size().height, videoFrame.size().width, CV_8UC3, Scalar(0,0,0));
+    laneDetection LaneAlgoVideo(_videoFrameUndistorted, perspectiveMatrix);
+    //imshow("enviarimage",_videoFrameUndistorted);
 
-//    undistort(videoFrame, videoFrameUndistorted, cameraMatrix, dist);
-//    _videoFrameUndistorted = videoFrameUndistorted.clone();
+    undistort(videoFrame, videoFrameUndistorted, cameraMatrix, dist);
+    _videoFrameUndistorted = videoFrameUndistorted.clone();
 
 
     //    LaneAlgoVideo.laneDetctAlgo(" ");
     //    finalResult = LaneAlgoVideo.getFinalResult();
 
 
-  //  fun.ReadVideo();
+//    fun.ReadVideo();
+
+    //vp.init();
+    tf.init();
+
 
 //    while(!videoFrame.empty())
 //    {

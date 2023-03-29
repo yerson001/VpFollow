@@ -16,7 +16,13 @@ file(GLOB INCLUDE_FILES
 include_directories(include)
 
 MACRO(add_example name)
-  ADD_EXECUTABLE(${name} source/${name}.cpp include/functions.h include/laneDetection.h)
+  ADD_EXECUTABLE(${name}
+      source/${name}.cpp
+      include/functions.h
+      include/laneDetection.h
+      include/vanishpoint.h
+      include/transformation.h)
+
   TARGET_LINK_LIBRARIES(${name} ${OpenCV_LIBS})
 ENDMACRO()
 
