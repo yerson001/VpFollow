@@ -66,7 +66,7 @@ public:
     x /= points.size();
     y /= points.size();
     Point vp(x, y);
-    circle(cdst, vp, 5, Scalar(0, 0, 0),5 );
+    //circle(cdst, vp, 5, Scalar(0, 0, 0),5 );
     return vp;
   }
 
@@ -163,15 +163,6 @@ public:
             current_point = vanish_point_detection(outImage, cdst);
              circle(outImage,current_point, 3, Scalar(60,233,239), FILLED);
 
-//            double duration_ms = (double(getTickCount()) - start) * 1000 / getTickFrequency();
-//            cout << "It took " << duration_ms << " ms." << endl;
-            if (current_point.x > center_x_max) {
-                cout << "left" << endl;
-              } else if (current_point.x < center_x_min) {
-                cout << "right" << endl;
-              } else {
-                cout << "center" << endl;
-              }
             line(cdst, Point(mark_point.x, 0), Point(mark_point.x, outImage.rows), Scalar(10, 10, 10), 1, CV_AA);
             //video.write(cdst);
             imshow("detected lines", outImage);
@@ -180,5 +171,33 @@ public:
 
       }
   }
+
+
+  Point vp(Mat image){
+    Point mark_point, current_point;
+    int center_x_min, center_x_max, center_y_min, center_y_max;
+    Mat outImage;
+    Mat dst, cdst;
+    float size = 40;
+    size = size/100;
+
+//    cout<<"size: "<<size<<endl;
+
+    resize(image, outImage, cv::Size(), size, size);
+
+//    cout<<outImage.cols<<endl;
+//    cout<<outImage.rows<<endl;
+
+
+    mark_point = vanish_point_detection(outImage, cdst);
+    cout<<mark_point.x<<"  "<<mark_point.y<<endl;
+//    circle(outImage,mark_point, 3, Scalar(60,233,239), FILLED);
+//    imshow("detected lines", outImage);
+
+    return mark_point;
+  }
+
+
+
 
 };

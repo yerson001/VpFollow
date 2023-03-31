@@ -6,6 +6,8 @@ using namespace std;
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include "vanishpoint.h"
+
 using namespace cv;
 
 #include <math.h>
@@ -16,9 +18,12 @@ using namespace cv;
 // small h corresponds to big FOV
 const int CAMERA_POS_Y = 0;  // d (cm)
 const int CAMERA_POS_X = 0;  // l (cm)
-const int CAMERA_POS_Z = 60; // h (cm)
-const float FOV_H = 80.0f;   // (degree)
-const float FOV_V = 50.0f;   // (degree)
+const int CAMERA_POS_Z = 300; // h (cm)
+//const float FOV_H = 80.0f;   // (degree)
+//const float FOV_V = 50.0f;   // (degree)
+
+const float FOV_H = 90.0f;   // (degree)
+const float FOV_V = 60.0f;   // (degree)
 
 class transformation{
 
@@ -88,21 +93,27 @@ public:
 
   void init()
   {
-    const int SRC_RESIZED_WIDTH = 720;
-    const int SRC_RESIZED_HEIGHT = 360;
-    const int DST_REMAPPED_WIDTH = 200;
-    const int DST_REMAPPED_HEIGHT = 200;
+
+    vanishpoint vp;
+
+//    const int SRC_RESIZED_WIDTH = 720;
+//    const int SRC_RESIZED_HEIGHT = 360;
+
+    const int SRC_RESIZED_WIDTH = 512;
+    const int SRC_RESIZED_HEIGHT = 288;
+
+    const int DST_REMAPPED_WIDTH = 300;
+    const int DST_REMAPPED_HEIGHT = 300;
 
     // init vanishing point at center of image
-    int vanishing_point_x = SRC_RESIZED_WIDTH >> 1;
-    int vanishing_point_y = SRC_RESIZED_HEIGHT >> 1;
+
 
     // build inverse perspective mapping table first
     int* ipm_table = new int[DST_REMAPPED_WIDTH * DST_REMAPPED_HEIGHT];
-    build_ipm_table(SRC_RESIZED_WIDTH, SRC_RESIZED_HEIGHT, DST_REMAPPED_WIDTH, DST_REMAPPED_HEIGHT,vanishing_point_x, vanishing_point_y, ipm_table);
+    build_ipm_table(SRC_RESIZED_WIDTH, SRC_RESIZED_HEIGHT, DST_REMAPPED_WIDTH, DST_REMAPPED_HEIGHT,360, 150, ipm_table);
 
     VideoCapture cap;
-    cap.open("/home/yrsn/Videos/video_.mp4");
+    cap.open("/home/yrsn/Videos/demo.mp4");
 
     Mat im;
     Mat imresize;
@@ -113,23 +124,27 @@ public:
     while (key != 27) // press esc to stop
       {
         cap >> im;
-        resize(im, imresize, Size(SRC_RESIZED_WIDTH, SRC_RESIZED_HEIGHT));
+
+        Point vpts = vp.vp(im);
+
+        resize(im, imresize, cv::Size(),0.4, 0.4);
         cvtColor(imresize, grayresize, COLOR_BGR2GRAY);
 
         inverse_perspective_mapping(DST_REMAPPED_WIDTH, DST_REMAPPED_HEIGHT, grayresize.data, ipm_table, imremapped.data);
 
-        line(imresize, Point(vanishing_point_x + 10, vanishing_point_y), Point(vanishing_point_x - 10, vanishing_point_y), Scalar(0, 0, 255));
-        line(imresize, Point(vanishing_point_x, vanishing_point_y + 10), Point(vanishing_point_x, vanishing_point_y - 10), Scalar(0, 0, 255));
+        line(imresize, Point(vpts.x + 17, vpts.y), Point(vpts.x - 17, vpts.y), Scalar(0, 0, 255),1);
+        line(imresize, Point(vpts.x, vpts.y + 17), Point(vpts.x, vpts.y - 17), Scalar(0, 0, 255),1);
+        circle(imresize,vpts, 5, Scalar(60,233,239), FILLED);
         imshow("resize", imresize);
         imshow("remap", imremapped);
 
         key = waitKey(10);
-        // adjust vanishing point position
-      }
-
         build_ipm_table(SRC_RESIZED_WIDTH, SRC_RESIZED_HEIGHT,
                                     DST_REMAPPED_WIDTH, DST_REMAPPED_HEIGHT,
-                                    vanishing_point_x, vanishing_point_y, ipm_table);
+                                    vpts.x, vpts.y, ipm_table);
+      }
+
+
 
     delete [] ipm_table;
 
