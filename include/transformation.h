@@ -91,10 +91,10 @@ public:
   }
 
 
-  void init()
+  void init(string VideoName)
   {
 
-    vanishpoint vp;
+    vanishpoint vp(VideoName);
 
 //    const int SRC_RESIZED_WIDTH = 720;
 //    const int SRC_RESIZED_HEIGHT = 360;
@@ -113,7 +113,7 @@ public:
     build_ipm_table(SRC_RESIZED_WIDTH, SRC_RESIZED_HEIGHT, DST_REMAPPED_WIDTH, DST_REMAPPED_HEIGHT,360, 150, ipm_table);
 
     VideoCapture cap;
-    cap.open("/home/yrsn/Videos/demo.mp4");
+    cap.open(VideoName);
 
     Mat im;
     Mat imresize;

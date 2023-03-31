@@ -14,7 +14,12 @@ using namespace cv;
 
 class vanishpoint
 {
+private:
+    string nombre;
 public:
+    vanishpoint(String VideoName){
+nombre = VideoName;
+    }
 
   bool hough_line_detect(Mat & image, Mat & cdst, vector<Vec2f> & left_lines, vector<Vec2f> & right_lines)
   {
@@ -126,7 +131,7 @@ public:
     return get_vanish_point(Intersection, image);
   }
 
-  void init()
+  void init(string VideoName)
   {
     Point mark_point, current_point;
     int center_x_min, center_x_max, center_y_min, center_y_max;
@@ -141,7 +146,7 @@ public:
 //    double start = double(getTickCount());
 
     //VideoCapture cap("./Data/corredor7.wmv");
-    VideoCapture cap("/home/yrsn/Videos/video_.mp4");
+    VideoCapture cap(VideoName);
 
     cap >> image;
     resize(image, outImage, cv::Size(), size, size);

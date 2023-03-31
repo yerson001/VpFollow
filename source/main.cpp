@@ -61,42 +61,42 @@ int main(int argc, char **argv)
     perspectiveMatrix = getPerspectiveTransform(perspectiveSrc,perspectiveDst);
 
 
-    string d = "jkj";
-    string path_video = "/home/yrsn/Videos/video_.mp4";
-    // *********************READ VIDEO*************************
-    VideoCapture laneVideo("/home/yrsn/Videos/video_.mp4");
+//    string d = "jkj";
+//    string path_video = "/home/yrsn/Videos/video_.mp4";
+//    // *********************READ VIDEO*************************
+//    VideoCapture laneVideo("/home/yrsn/Videos/video_.mp4");
 
 
 
-    videoSize = Size((int)laneVideo.get(CAP_PROP_FRAME_WIDTH),(int)laneVideo.get(CAP_PROP_FRAME_HEIGHT));
+//    videoSize = Size((int)laneVideo.get(CAP_PROP_FRAME_WIDTH),(int)laneVideo.get(CAP_PROP_FRAME_HEIGHT));
 
-    std::string PATH_CAM = "/home/yrsn/Drone/VpFollow/cam/camera_cal/";
+//    std::string PATH_CAM = "/home/yrsn/Drone/VpFollow/cam/camera_cal/";
 
-    //--------------Camera Calibration Start-----------------
-    FileStorage fsRead;
-    fsRead.open("Intrinsic.xml", FileStorage::READ);
-    Mat src = imread(PATH_CAM+"calibration1.jpg");
-    Mat dst;
-    if (fsRead.isOpened() == false)
-    {
-        CameraCalibrator myCameraCalibrator(d,0);
-        myCameraCalibrator.doCalibration(cameraMatrix, dist);
-        FileStorage fs;
-        fs.open("Intrinsic.xml", FileStorage::WRITE);
-        fs << "CameraMatrix" << cameraMatrix;
-        fs << "Dist" << dist;
-        fs.release();
-        fsRead.release();
-        cout << "There is no existing intrinsic parameters XML file." << endl;
-        cout << "Start calibraton......" << endl;
-    }
-    else
-    {
-        fsRead["CameraMatrix"] >> cameraMatrix;
-        fsRead["Dist"] >> dist;
-        fsRead.release();
-    }
-    undistort(src, dst, cameraMatrix, dist);
+//    //--------------Camera Calibration Start-----------------
+//    FileStorage fsRead;
+//    fsRead.open("Intrinsic.xml", FileStorage::READ);
+//    Mat src = imread(PATH_CAM+"calibration1.jpg");
+//    Mat dst;
+//    if (fsRead.isOpened() == false)
+//    {
+//        CameraCalibrator myCameraCalibrator(d,0);
+//        myCameraCalibrator.doCalibration(cameraMatrix, dist);
+//        FileStorage fs;
+//        fs.open("Intrinsic.xml", FileStorage::WRITE);
+//        fs << "CameraMatrix" << cameraMatrix;
+//        fs << "Dist" << dist;
+//        fs.release();
+//        fsRead.release();
+//        cout << "There is no existing intrinsic parameters XML file." << endl;
+//        cout << "Start calibraton......" << endl;
+//    }
+//    else
+//    {
+//        fsRead["CameraMatrix"] >> cameraMatrix;
+//        fsRead["Dist"] >> dist;
+//        fsRead.release();
+//    }
+//    undistort(src, dst, cameraMatrix, dist);
     //--------------Camera Calibration Finish-----------------
 
 //    //Display Video Image
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 //    fun.ReadVideo();
 
     //vp.init();
-    tf.init();
+    tf.init("/home/fondecyt/Vídeos/video_.mp4");
 
 
 //    while(!videoFrame.empty())
